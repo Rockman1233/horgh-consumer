@@ -2,12 +2,14 @@ package mysql
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"horgh-consumer/app/entities"
 	"strings"
 )
 
 type Implementation struct {
+	db *sql.DB
 }
 
 func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) error {
@@ -28,11 +30,9 @@ func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) err
 	}
 
 	insertingQuery := "INSERT INTO " + table + " (" + keyString.String() + ") VALUES (" + valueString.String() + ")"
+	_, err := i.db.Exec(insertingQuery)
 
-	conn, _ := Client.Connect("mysql", "root:my-secret-pw@(0.0.0.0:3306)/dc_image")
-	_, _ = conn.Exec(insertingQuery)
-
-	return i.client.Insert(ctx)
+	return err
 }
 
 func (i Implementation) Delete(ctx context.Context) error {
@@ -44,5 +44,7 @@ func (i Implementation) Update(ctx context.Context) error {
 }
 
 func New(conf Config) Implementation {
-	return Implementation{}
+	dataSource := conf.User + ":" + conf.Password + "@(" + conf.Host + ":" + fmt.Sprint(conf.Port) + ")"
+	db, _ := sql.Open("mysql", dataSource)
+	return Implementation{db}
 }

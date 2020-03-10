@@ -32,7 +32,11 @@ func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) err
 	insertingQuery := "INSERT INTO " + table + " (" + keyString.String() + ") VALUES (" + valueString.String() + ")"
 	_, err := i.db.Exec(insertingQuery)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (i Implementation) Delete(ctx context.Context) error {

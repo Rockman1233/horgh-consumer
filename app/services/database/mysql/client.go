@@ -16,7 +16,7 @@ func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) err
 
 	var keyString strings.Builder
 	var valueString strings.Builder
-	table := "user" // TODO:: Where is this from?
+	table := queryObj.Table
 	lengthOfMap := len(queryObj.Data)
 
 	// Building strings

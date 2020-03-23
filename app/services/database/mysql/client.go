@@ -12,6 +12,13 @@ type Implementation struct {
 	db *sql.DB
 }
 
+type insertingQuery struct {
+	Command string
+	Table   string
+	Keys    string
+	Values  string
+}
+
 func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) error {
 
 	var keyString strings.Builder

@@ -15,15 +15,15 @@ type Implementation struct {
 type insertingQuery struct {
 	Command string
 	Table   string
-	Keys    string
-	Values  string
+	Keys    strings.Builder
+	Values  strings.Builder
 }
 
 func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) error {
 
 	var keyString strings.Builder
 	var valueString strings.Builder
-	table := queryObj.Table
+
 	lengthOfMap := len(queryObj.Data)
 
 	// Building strings
@@ -36,8 +36,16 @@ func (i Implementation) Insert(ctx context.Context, queryObj entities.Query) err
 		valueString.WriteString("\"" + fmt.Sprint(value.Value) + "\"" + separator)
 	}
 
-	insertingQuery := "INSERT INTO " + table + " (" + keyString.String() + ") VALUES (" + valueString.String() + ")"
-	_, err := i.db.Exec(insertingQuery)
+	instanceOfQuery := insertingQuery{
+		Command: "INSERT INTO", // TODO:: Does is good?
+		Table:   queryObj.Table,
+		Keys:    keyString,
+		Values:  valueString,
+	}
+
+	execute := fmt.Sprintf("%s %s (%s) VALUES (%s)", instanceOfQuery.Command, instanceOfQuery.Table, instanceOfQuery.Keys.String(), instanceOfQuery.Values.String())
+
+	_, err := i.db.Exec(execute)
 
 	return err
 }

@@ -51,7 +51,7 @@ func (i Implementation) Update(ctx context.Context) error {
 }
 
 func New(conf Config) Implementation {
-	dataSource := fmt.Sprintf(conf.User, ":", conf.Password, "@(", conf.Host, ":", conf.Port, ")")
+	dataSource := fmt.Sprintf("%s:%s@(%s:%d)", conf.User, conf.Password, conf.Host, conf.Port)
 	db, _ := sql.Open("mysql", dataSource)
 	return Implementation{db}
 }

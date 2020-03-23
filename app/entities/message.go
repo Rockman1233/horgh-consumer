@@ -8,7 +8,8 @@ type Column struct {
 }
 
 type Query struct {
-	Data []Column `json:"data"`
+	Data  []Column `json:"data"`
+	Table string
 }
 
 func Parse(message string) (Query, error) {
